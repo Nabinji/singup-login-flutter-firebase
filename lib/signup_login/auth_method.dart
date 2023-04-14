@@ -69,3 +69,14 @@ class AuthMethod {
     await _auth.signOut();
   }
 }
+
+      // StreamBuilder(
+      //   stream: FirebaseAuth.instance.authStateChanges(),
+      //   builder: (context, snapshot) {
+      //     if (snapshot.hasData) {
+      //       return const HomePage();
+      //     } else {
+      //       return const AuthSplashScreen();
+      //     }
+      //   },
+      // ),

@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:signup_login/home_screen.dart';
-import 'package:signup_login/signup_screen.dart';
-import 'package:signup_login/snack_bar.dart';
-
-import 'package:signup_login/text_field_input.dart';
+import 'package:signup_login/signup_login/snack_bar.dart';
+import 'package:signup_login/signup_login/text_field_input.dart';
 
 import 'auth_method.dart';
+import 'home_screen.dart';
+import 'login_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _SignupScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignupScreenState extends State<LoginScreen> {
+class _SignupScreenState extends State<SignupScreen> {
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
   bool isLoading = false;
 
   @override
@@ -24,22 +25,27 @@ class _SignupScreenState extends State<LoginScreen> {
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
+    nameController.dispose();
+    addressController.dispose();
   }
 
-// email and passowrd auth part
-  void loginUser() async {
+  void signupUser() async {
+    // set is loading to true.
     setState(() {
       isLoading = true;
     });
     // signup user using our authmethod
-    String res = await AuthMethod().loginUser(
-        email: emailController.text, password: passwordController.text);
-
+    String res = await AuthMethod().signupUser(
+        email: emailController.text,
+        password: passwordController.text,
+        address: addressController.text,
+        name: nameController.text);
+    // if string return is success, user has been creaded and navigate to next screen other witse show error.
     if (res == "success") {
       setState(() {
         isLoading = false;
       });
-      //navigate to the home screen
+      //navigate to the next screen
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const HomeScreen()));
     } else {
@@ -61,7 +67,14 @@ class _SignupScreenState extends State<LoginScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: height / 3),
+            SizedBox(height: height / 4.3),
+            TextFieldInput(
+                textEditingController: nameController,
+                hintText: 'Enter your name',
+                textInputType: TextInputType.text),
+            const SizedBox(
+              height: 24,
+            ),
             TextFieldInput(
                 textEditingController: emailController,
                 hintText: 'Enter your email',
@@ -78,8 +91,15 @@ class _SignupScreenState extends State<LoginScreen> {
             const SizedBox(
               height: 24,
             ),
+            TextFieldInput(
+                textEditingController: addressController,
+                hintText: 'Enter your address',
+                textInputType: TextInputType.text),
+            const SizedBox(
+              height: 24,
+            ),
             InkWell(
-              onTap: loginUser,
+              onTap: signupUser,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
@@ -89,27 +109,27 @@ class _SignupScreenState extends State<LoginScreen> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(4))),
                       color: Colors.blue),
-                  child: const Text("Log in"),
+                  child: const Text("Sign up"),
                 ),
               ),
             ),
             SizedBox(
-              height: height / 3.1,
+              height: height / 4.3,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Don't have an account?"),
+                const Text("Already have an account?"),
                 GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const SignupScreen(),
+                        builder: (context) => const LoginScreen(),
                       ),
                     );
                   },
                   child: const Text(
-                    "SignUp",
+                    "Login",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 )
